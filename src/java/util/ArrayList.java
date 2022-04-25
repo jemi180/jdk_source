@@ -5,6 +5,7 @@ import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 import sun.misc.SharedSecrets;
 
+//
 public class ArrayList<E> extends AbstractList<E>
         implements List<E>, RandomAccess, Cloneable, java.io.Serializable
 {

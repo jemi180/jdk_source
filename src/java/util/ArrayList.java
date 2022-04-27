@@ -86,13 +86,13 @@ public class ArrayList<E> extends AbstractList<E>
             grow(minCapacity);
     }
 
-    //最大容量，为啥要减去8？todo
+    //最大容量，为啥要减去8？todo 参考pdf
     private static final int MAX_ARRAY_SIZE = Integer.MAX_VALUE - 8;
 
-    //扩容的方法
+    //扩容方法
     private void grow(int minCapacity) {
         int oldCapacity = elementData.length;
-        int newCapacity = oldCapacity + (oldCapacity >> 1); //扩容1.5倍
+        int newCapacity = oldCapacity + (oldCapacity >> 1); //扩容近似1.5倍，因为右移1位是除以2向下取整
         if (newCapacity - minCapacity < 0)
             newCapacity = minCapacity;
         if (newCapacity - MAX_ARRAY_SIZE > 0)
@@ -251,7 +251,7 @@ public class ArrayList<E> extends AbstractList<E>
         elementData[--size] = null; //末尾设置为null让gc回收
     }
 
-    //清空所有元素，并将size置为0
+    //清空所有元素，但是elementData的长度并没有清空
     public void clear() {
         modCount++;
         for (int i = 0; i < size; i++)
@@ -402,14 +402,8 @@ public class ArrayList<E> extends AbstractList<E>
         return modified;
     }
 
-    /**
-     * Save the state of the <tt>ArrayList</tt> instance to a stream (that
-     * is, serialize it).
-     *
-     * @serialData The length of the array backing the <tt>ArrayList</tt>
-     *             instance is emitted (int), followed by all of its elements
-     *             (each an <tt>Object</tt>) in the proper order.
-     */
+
+    //自己定义的序列化方法，该方法遍历elementData中不为null的元素
     private void writeObject(java.io.ObjectOutputStream s)
         throws java.io.IOException{
         // Write out element count, and any hidden stuff
@@ -419,20 +413,17 @@ public class ArrayList<E> extends AbstractList<E>
         // Write out size as capacity for behavioural compatibility with clone()
         s.writeInt(size);
 
-        // Write out all elements in the proper order.
-        for (int i=0; i<size; i++) {
+        //遍历elementData中不为null的元素
+        for (int i = 0; i < size; i++) {
             s.writeObject(elementData[i]);
         }
-
+        //todo
         if (modCount != expectedModCount) {
             throw new ConcurrentModificationException();
         }
     }
 
-    /**
-     * Reconstitute the <tt>ArrayList</tt> instance from a stream (that is,
-     * deserialize it).
-     */
+    //自己定义的反序列化方法，该方法遍历elementData中不为null的元素
     private void readObject(java.io.ObjectInputStream s)
         throws java.io.IOException, ClassNotFoundException {
         elementData = EMPTY_ELEMENTDATA;
@@ -450,8 +441,8 @@ public class ArrayList<E> extends AbstractList<E>
             ensureCapacityInternal(size);
 
             Object[] a = elementData;
-            // Read in all elements in the proper order.
-            for (int i=0; i<size; i++) {
+            //遍历elementData中不为null的元素
+            for (int i = 0; i < size; i++) {
                 a[i] = s.readObject();
             }
         }

@@ -1,55 +1,19 @@
-/*
- * Copyright (c) 1997, 2013, Oracle and/or its affiliates. All rights reserved.
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
-
 package java.util;
 
 import java.util.function.Consumer;
 
 public class LinkedList<E>
     extends AbstractSequentialList<E>
-    implements List<E>, Deque<E>, Cloneable, java.io.Serializable
-{
+    implements List<E>, Deque<E>, Cloneable, java.io.Serializable {
+
     transient int size = 0;
 
-    /**
-     * Pointer to first node.
-     * Invariant: (first == null && last == null) ||
-     *            (first.prev == null && first.item != null)
-     */
+    //第一个元素
     transient Node<E> first;
 
-    /**
-     * Pointer to last node.
-     * Invariant: (first == null && last == null) ||
-     *            (last.next == null && last.item != null)
-     */
+    //最后一个元素
     transient Node<E> last;
 
-    /**
-     * Constructs an empty list.
-     */
     public LinkedList() {
     }
 

@@ -5,30 +5,32 @@ import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 import sun.misc.SharedSecrets;
 
-//1有序，插入顺序与取出顺序一致
-//2允许重复，允许插入null值
-//3能够用索引进行查询、删除和插入的数据结构实现RandomAccess接口，采用for循环遍历要比迭代器遍历快
-//4线程不安全
-//5支持浅克隆
+/**
+ * 1有序，插入顺序与取出顺序一致
+ * 2允许重复，允许插入null值
+ * 3能够用索引进行快速随机访问的数据结构实现RandomAccess接口，采用for循环遍历要比迭代器遍历快
+ * 4线程不安全
+ * 5支持浅克隆
+ */
 public class ArrayList<E> extends AbstractList<E>
         implements List<E>, RandomAccess, Cloneable, java.io.Serializable {
     private static final long serialVersionUID = 8683452581122892189L;
-
     private static final int DEFAULT_CAPACITY = 10;
-
-    //采用有参构造器构造，容量传入0时使用
+    /**
+     * 采用有参构造器构造，容量传入0时使用
+     */
     private static final Object[] EMPTY_ELEMENTDATA = {};
-
-    //采用无参构造器构造时使用
+    /**
+     * 采用无参构造器构造时使用
+     */
     private static final Object[] DEFAULTCAPACITY_EMPTY_ELEMENTDATA = {};
-
-    //1底层采用的数组
-    //2transient关键字表示不参与序列化。todo
+    /**
+     * 1底层采用的数组
+     * 2transient关键字表示不参与序列化。todo
+     */
     transient Object[] elementData;
-
     private int size;
 
-    //有参构造器，容量为0时，底层数组指向EMPTY_ELEMENTDATA
     public ArrayList(int initialCapacity) {
         if (initialCapacity > 0) {
             this.elementData = new Object[initialCapacity];
@@ -39,7 +41,6 @@ public class ArrayList<E> extends AbstractList<E>
         }
     }
 
-    //无参构造器，底层数组指向DEFAULTCAPACITY_EMPTY_ELEMENTDATA
     public ArrayList() {
         this.elementData = DEFAULTCAPACITY_EMPTY_ELEMENTDATA;
     }
@@ -86,10 +87,14 @@ public class ArrayList<E> extends AbstractList<E>
             grow(minCapacity);
     }
 
-    //最大容量，为啥要减去8？todo 参考pdf
+    /**
+     * 最大容量，为啥要减去8？todo 参考pdf
+     */
     private static final int MAX_ARRAY_SIZE = Integer.MAX_VALUE - 8;
 
-    //扩容方法
+    /**
+     * 具体扩容方法
+     */
     private void grow(int minCapacity) {
         int oldCapacity = elementData.length;
         int newCapacity = oldCapacity + (oldCapacity >> 1); //扩容近似1.5倍，因为右移1位是除以2向下取整
@@ -114,12 +119,16 @@ public class ArrayList<E> extends AbstractList<E>
         return size == 0;
     }
 
-    //返回第一次出现元素的索引位置，没有就返回-1
+    /**
+     * 返回第一次出现元素的索引位置，没有就返回-1
+     */
     public boolean contains(Object o) {
         return indexOf(o) >= 0;
     }
 
-    //返回第一次出现元素的索引位置，没有就返回-1
+    /**
+     * 返回第一次出现元素的索引位置，没有就返回-1
+     */
     public int indexOf(Object o) {
         if (o == null) {
             for (int i = 0; i < size; i++)
@@ -133,7 +142,9 @@ public class ArrayList<E> extends AbstractList<E>
         return -1;
     }
 
-    //返回最后一次出现索引的位置，没有就返回-1
+    /**
+     * 返回最后一次出现索引的位置，没有就返回-1
+     */
     public int lastIndexOf(Object o) {
         if (o == null) {
             for (int i = size-1; i >= 0; i--)
@@ -180,13 +191,17 @@ public class ArrayList<E> extends AbstractList<E>
         return (E) elementData[index];
     }
 
-    //获取index位置的元素
+    /**
+     * 获取index位置的元素
+     */
     public E get(int index) {
         rangeCheck(index);  //index校验
         return elementData(index);
     }
 
-    //给index位置的元素设置element，返回之前index位置的元素
+    /**
+     * 给index位置的元素设置element，返回之前index位置的元素
+     */
     public E set(int index, E element) {
         rangeCheck(index);  //index校验
         E oldValue = elementData(index);
@@ -194,14 +209,18 @@ public class ArrayList<E> extends AbstractList<E>
         return oldValue;
     }
 
-    //末尾添加元素
+    /**
+     * 末尾添加元素
+     */
     public boolean add(E e) {
         ensureCapacityInternal(size + 1);   //确保容量，不够就扩容
         elementData[size++] = e;
         return true;
     }
 
-    //指定位置添加元素
+    /**
+     * 指定位置添加元素
+     */
     public void add(int index, E element) {
         rangeCheckForAdd(index);    //index校验
         ensureCapacityInternal(size + 1);   //确保容量，不够就扩容
@@ -211,7 +230,9 @@ public class ArrayList<E> extends AbstractList<E>
         size++;
     }
 
-    //删除指定位置元素
+    /**
+     * 删除指定位置元素
+     */
     public E remove(int index) {
         rangeCheck(index);  //index校验
         modCount++;
@@ -224,7 +245,9 @@ public class ArrayList<E> extends AbstractList<E>
         return oldValue;
     }
 
-    //删除元素，只删除第一个
+    /**
+     * 删除元素，只删除第一个
+     */
     public boolean remove(Object o) {
         if (o == null) {
             for (int index = 0; index < size; index++)
@@ -251,7 +274,9 @@ public class ArrayList<E> extends AbstractList<E>
         elementData[--size] = null; //末尾设置为null让gc回收
     }
 
-    //清空所有元素，但是elementData的长度并没有清空
+    /**
+     * 清空所有元素，但是elementData的长度并没有清空
+     */
     public void clear() {
         modCount++;
         for (int i = 0; i < size; i++)
@@ -259,7 +284,9 @@ public class ArrayList<E> extends AbstractList<E>
         size = 0;
     }
 
-    //末尾添加集合
+    /**
+     * 末尾添加集合
+     */
     public boolean addAll(Collection<? extends E> c) {
         Object[] a = c.toArray();
         int numNew = a.length;
@@ -269,7 +296,9 @@ public class ArrayList<E> extends AbstractList<E>
         return numNew != 0;
     }
 
-   //指定位置添加集合
+    /**
+     * 指定位置添加集合
+     */
     public boolean addAll(int index, Collection<? extends E> c) {
         rangeCheckForAdd(index);    //index校验
         Object[] a = c.toArray();
@@ -311,13 +340,11 @@ public class ArrayList<E> extends AbstractList<E>
         size = newSize;
     }
 
-    //index校验
     private void rangeCheck(int index) {
         if (index >= size)
             throw new IndexOutOfBoundsException(outOfBoundsMsg(index));
     }
 
-    //index校验
     private void rangeCheckForAdd(int index) {
         if (index > size || index < 0)
             throw new IndexOutOfBoundsException(outOfBoundsMsg(index));
@@ -402,8 +429,9 @@ public class ArrayList<E> extends AbstractList<E>
         return modified;
     }
 
-
-    //自己定义的序列化方法，该方法遍历elementData中不为null的元素
+    /**
+     * 自己定义的序列化方法，该方法遍历elementData中不为null的元素
+     */
     private void writeObject(java.io.ObjectOutputStream s)
         throws java.io.IOException{
         // Write out element count, and any hidden stuff
@@ -423,7 +451,9 @@ public class ArrayList<E> extends AbstractList<E>
         }
     }
 
-    //自己定义的反序列化方法，该方法遍历elementData中不为null的元素
+    /**
+     * 自己定义的反序列化方法，该方法遍历elementData中不为null的元素
+     */
     private void readObject(java.io.ObjectInputStream s)
         throws java.io.IOException, ClassNotFoundException {
         elementData = EMPTY_ELEMENTDATA;

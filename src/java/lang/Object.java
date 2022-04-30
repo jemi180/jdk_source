@@ -1,39 +1,5 @@
-/*
- * Copyright (c) 1994, 2012, Oracle and/or its affiliates. All rights reserved.
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
-
 package java.lang;
 
-/**
- * Class {@code Object} is the root of the class hierarchy.
- * Every class has {@code Object} as a superclass. All objects,
- * including arrays, implement the methods of this class.
- *
- * @author  unascribed
- * @see     java.lang.Class
- * @since   JDK1.0
- */
 public class Object {
 
     private static native void registerNatives();
